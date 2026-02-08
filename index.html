@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Access to a Livable Planet — Air Quality &amp; Monitoring Accessibility</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Fraunces:wght@600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<script src="https://public.tableau.com/javascripts/api/viz_v1.js"></script>
+<style>
+    :root{
+      /* --- 1. COLORS --- */
+      --color-primary: #1B5E20;
+      --color-secondary: #F57C00;
+      --color-accent: #C62828;
+      --color-info: #1565C0;
+
+      --color-bg: #F5F7F5;  
+      --color-surface: #FFFFFF;
+      --color-surface-raised: #F9FAFB;
+      
+      /* --- 2. BORDERS & SHADOWS --- */
+      --color-border: rgba(0,0,0,0.08); 
+      --border-radius: 12px;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+
+      /* Typography */
+      --color-text: #1A1A1A;       
+      --color-text-muted: #374151; 
+      --color-text-light: #555555;
+
+      --font-display: 'Fraunces', serif;
+      --font-body: 'IBM Plex Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Spacing */
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2.5rem;
+      --space-xl: 4rem;
+      --space-2xl: 6rem;
+
+      --max-width: 1200px;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background: var(--color-bg);
+      line-height: 1.6;
+      font-size: 19px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* --- HERO --- */
+    .hero{
+      background: linear-gradient(135deg,var(--color-primary) 0%, #0d3d13 100%);
+      color: #fff;
+      padding: 3rem var(--space-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before{
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(900px 520px at 18% 0%, rgba(255,255,255,0.07), transparent 60%);
+      pointer-events: none;
+    }
+    .hero-content{ max-width: var(--max-width); margin: 0 auto; position: relative; z-index: 1; }
+    
+    .hero-label{
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.95;
+      margin-bottom: var(--space-sm);
+      color: var(--color-warning);
+      font-weight: 500;
+    }
+    h1{
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.08;
+      margin-bottom: var(--space-md);
+      letter-spacing: -0.02em;
+    }
+    .hero-subtitle{
+      font-size: 1.15rem;
+      max-width: 900px;
+      opacity: 0.96;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+    .hero-meta{ display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
+    .meta-item{ display: flex; flex-direction: column; gap: 0.25rem; min-width: 150px; }
+    .meta-label{ font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75; }
+    .meta-value{ font-size: 1.05rem; font-weight: 600; }
+
+    /* --- NAVIGATION --- */
+    .nav-tabs{
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-tabs-inner{
+      max-width: var(--max-width); margin: 0 auto; padding: 0 var(--space-md);
+      display: flex; gap: var(--space-xs); overflow-x: auto;
+    }
+    .nav-tab{
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 1rem var(--space-md);
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .nav-tab:hover{ color: var(--color-primary); background: rgba(27,94,32,0.05); }
+    .nav-tab.active{ color: var(--color-primary); border-bottom-color: var(--color-primary); }
+
+    /* --- LAYOUT --- */
+    .container{ max-width: var(--max-width); margin: 0 auto; padding: 0 var(--space-md); }
+    .section{ padding: 2rem 0; }
+    .section-header{ margin-bottom: 1.5rem; }
+    
+    .section-number{
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-secondary);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    h2{
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--color-primary);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+    .section-intro{ font-size: 1.1rem; line-height: 1.7; color: var(--color-text-muted); max-width: 980px; }
+
+    /* --- CARDS & METRICS --- */
+    .metric, .dimension-card, .rec-card, .quad-card, .viz-container, .insight-box {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        opacity: 0; 
+        animation-fill-mode: forwards;
+    }
+    .metric:hover, .dimension-card:hover, .rec-card:hover, .quad-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+        border-color: rgba(27, 94, 32, 0.2);
+    }
+
+    /* Staggered Animations */
+    .dimension-grid .dimension-card:nth-child(1) { animation-delay: 0ms; }
+    .dimension-grid .dimension-card:nth-child(2) { animation-delay: 150ms; }
+    .dimension-grid .dimension-card:nth-child(3) { animation-delay: 300ms; }
+    
+    .rec-grid .rec-card:nth-child(1) { animation-delay: 0ms; }
+    .rec-grid .rec-card:nth-child(2) { animation-delay: 150ms; }
+    .rec-grid .rec-card:nth-child(3) { animation-delay: 300ms; }
+
+    .quadrant-grid .quad-card:nth-child(1) { animation-delay: 0ms; }
+    .quadrant-grid .quad-card:nth-child(2) { animation-delay: 100ms; }
+    .quadrant-grid .quad-card:nth-child(3) { animation-delay: 200ms; }
+    .quadrant-grid .quad-card:nth-child(4) { animation-delay: 300ms; }
+
+    .metric-row .metric:nth-child(1) { animation-delay: 0ms; }
+    .metric-row .metric:nth-child(2) { animation-delay: 100ms; }
+    .metric-row .metric:nth-child(3) { animation-delay: 200ms; }
+    .metric-row .metric:nth-child(4) { animation-delay: 300ms; }
+
+    /* --- INSIGHT BOXES --- */
+    .insight-box{
+      background: linear-gradient(135deg, rgba(27,94,32,0.05), rgba(27,94,32,0.02));
+      border-left: 4px solid var(--color-primary);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: var(--border-radius);
+    }
+    .insight-box.warning{ background: linear-gradient(135deg, rgba(198,40,40,0.06), rgba(198,40,40,0.02)); border-left-color: var(--color-accent); }
+    .insight-box.info{ background: linear-gradient(135deg, rgba(21,101,192,0.06), rgba(21,101,192,0.02)); border-left-color: var(--color-info); }
+    .insight-title{ font-size: 1.1rem; font-weight: 650; margin-bottom: 0.5rem; color: var(--color-primary); }
+    .insight-box.warning .insight-title{color: var(--color-accent);}
+    .insight-box.info .insight-title{color: var(--color-info);}
+    .insight-content{ font-size: 1.05rem; line-height: 1.6; color: var(--color-text-muted); }
+
+    /* --- SUBSECTIONS --- */
+    h3{
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 650;
+      margin: 2.5rem 0 1rem 0;
+      color: var(--color-primary);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    h3 .tag {
+        font-family: var(--font-mono); font-size: 0.7rem; background: rgba(27, 94, 32, 0.1); color: var(--color-primary);
+        padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;
+        margin-right: 0.5rem;
+    }
+
+    /* --- DIMENSION CARDS --- */
+    .dimension-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+    .dimension-card{ padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; margin-bottom: 1rem; }
+    
+    .dimension-number{ 
+        font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-secondary); 
+        letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; margin-bottom: 0.5rem; 
+    }
+    .dimension-title{ font-size: 1.25rem; font-weight: 650; color: var(--color-text); margin-bottom: 0.5rem; }
+    .dimension-content p { margin-bottom: 0.5rem; color: var(--color-text-muted); font-size: 1rem; }
+    
+    .formula{ 
+        margin-top: 0.5rem; 
+        padding: 0.75rem; 
+        background: var(--color-surface-raised); 
+        border: 1px solid var(--color-border); 
+        border-radius: 8px; 
+        font-family: var(--font-mono); 
+        font-size: 0.85rem; 
+        color: var(--color-text);
+        overflow-x: auto;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem 2rem;
+      margin-top: 1rem;
+      list-style: none;
+      padding: 0;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }
+    .stats-grid li { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 2px;}
+    .stats-grid strong { color: var(--color-text); font-weight: 600; }
+
+    .metric-row{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .metric{ text-align: center; padding: 1.5rem; }
+    .metric-value{ font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; color: var(--color-primary); line-height: 1; }
+    .metric-label{ font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+    .metric-foot{ font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-light); margin-top: 0.5rem; }
+
+    /* --- TABLE STYLING --- */
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 1rem; }
+    .data-table th { text-align: left; padding: 12px; border-bottom: 2px solid var(--color-border); color: var(--color-text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .data-table td { padding: 12px; border-bottom: 1px solid var(--color-border); color: var(--color-text); vertical-align: middle; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .tag-tier { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    
+    /* Tier Colors */
+    .tag-tier.t1 { background: rgba(21,101,192,0.1); color: var(--color-info); }
+    .tag-tier.t2 { background: rgba(245,124,0,0.1); color: var(--color-secondary); }
+    .tag-tier.t3 { background: rgba(198,40,40,0.1); color: var(--color-accent); }
+
+    /* --- VIZ CONTAINERS --- */
+    .viz-container{ padding: 1.5rem; margin: 1.5rem 0; }
+    .viz-header{ margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-border); }
+    .viz-title{ font-size: 1.15rem; font-weight: 650; margin-bottom: 0.25rem; }
+    .viz-description{ font-size: 0.95rem; color: var(--color-text-muted); }
+    .viz-legend { display: flex; gap: 1rem; margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; flex-wrap: wrap; }
+    .legend-item span { margin-right: 0.3rem; }
+
+    /* --- QUADRANTS (UPDATED COLOR TAGS) --- */
+    .quadrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+    .quad-card { padding: 1.5rem; border-top: 4px solid transparent; }
+    .quad-card h5 { margin-bottom: 0.5rem; font-family: var(--font-display); font-size: 1.1rem; }
+    
+    .quad-p1 { background: rgba(198,40,40,0.02); border-top-color: var(--color-accent); }
+    .quad-p2 { background: rgba(245,124,0,0.02); border-top-color: var(--color-secondary); }
+    .quad-p3 { background: rgba(21,101,192,0.02); border-top-color: var(--color-info); }
+    .quad-p4 { background: rgba(46,125,50,0.02); border-top-color: var(--color-success); }
+    
+    .quad-tag { 
+        font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; 
+        display: inline-block; margin-bottom: 0.5rem; padding: 4px 8px; border-radius: 4px; font-weight: 600; 
+    }
+    /* Tinted Backgrounds + Dark Text for better readability */
+    .quad-p1 .quad-tag { background: #fee2e2; color: #991b1b; }
+    .quad-p2 .quad-tag { background: #ffedd5; color: #9a3412; }
+    .quad-p3 .quad-tag { background: #e0f2fe; color: #075985; }
+    .quad-p4 .quad-tag { background: #dcfce7; color: #166534; }
+
+    /* --- RECOMMENDATIONS --- */
+    .rec-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+    .rec-card{ padding: 1.5rem; }
+    .rec-label{ font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-light); margin-bottom: 0.5rem; }
+    .rec-title{ font-size: 1.15rem; font-weight: 650; margin-bottom: 0.5rem; }
+    .rec-description{ font-size: 1.05rem; color: var(--color-text-muted); line-height: 1.6; }
+
+    /* --- FOOTER --- */
+    .footer{ background: var(--color-primary); color: #fff; padding: 3rem 0; margin-top: 3rem; }
+    .footer-content{ max-width: var(--max-width); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+    .footer-section h4{ font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 1rem; }
+    .footer-section p, .footer-section a{ opacity: 0.92; line-height: 1.75; color: #fff; text-decoration: none; font-size: 0.95rem; }
+    .footer-section a:hover{ text-decoration: underline; }
+
+    .methodology-list{ list-style: none; margin: 0; padding: 0; }
+    .methodology-list li{ padding-left: 1.5rem; margin-bottom: 0.5rem; position: relative; color: var(--color-text-muted); }
+    .methodology-list li::before{ content: '→'; position: absolute; left: 0; color: var(--color-secondary); font-weight: 800; }
+
+    @media (max-width:768px){
+      .hero{padding: 3rem 1rem;}
+      h1{font-size:2.4rem;}
+      .dimension-grid, .rec-grid, .quadrant-grid{grid-template-columns:1fr;}
+    }
+
+    /* BUG FIX: Added 'forwards' to persist final state of animation */
+    .animate-in{animation:fadeInUp 0.6s ease-out forwards;}
+    @keyframes fadeInUp{ from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
+</style>
+</head>
+<body>
+<header class="hero" id="top">
+<div class="hero-content">
+<div class="hero-label">DubsTech Datathon • Environmental Justice (AQI by County)</div>
+<h1>Access to a Livable Planet</h1>
+<p class="hero-subtitle">
+        A policy-ready accessibility assessment of U.S. air quality: who gets <b>clean air</b>, who gets <b>reliable monitoring</b>, and where environmental harms become a structural barrier to everyday life.
+      </p>
+<div class="hero-meta">
+<div class="meta-item">
+<div class="meta-label">Dataset</div>
+<div class="meta-value">EPA AQI by County (annual)</div>
+</div>
+<div class="meta-item">
+<div class="meta-label">Lens</div>
+<div class="meta-value">Environmental Accessibility</div>
+</div>
+<div class="meta-item">
+<div class="meta-label">Policy Use</div>
+<div class="meta-value">Justice40-style prioritization</div>
+</div>
+</div>
+</div>
+</header>
+<nav aria-label="Report navigation" class="nav-tabs">
+<div class="nav-tabs-inner">
+<button class="nav-tab active" data-target="summary">Summary</button>
+<button class="nav-tab" data-target="methods">Questions</button>
+<button class="nav-tab" data-target="analysis">Analysis</button>
+<button class="nav-tab" data-target="recs">Recommendations</button>
+</div>
+</nav>
+<section class="section" id="summary">
+<div class="container">
+<div class="section-header">
+<div class="section-number">01 • Executive Summary</div>
+<h2>The Geographic Concentration of Air Inequity</h2>
+<p class="section-intro">
+    The United States faces a "Long Tail" environmental crisis: while 75% of counties enjoy clean air, a small cluster of "Risk Epicenters" faces exposure levels up to 50 times higher than the national average. This disparity is worsened by a "Data Paradox," where the highest-risk regions in the Midwest and Southwest often suffer from the lowest monitoring oversight, hiding the true scale of the disaster.
+</p>
+</div>
+
+<div class="insight-box animate-in">
+    <div class="insight-title" style="display:flex; align-items:center; gap:0.5rem; font-size:1.2rem;">
+        🎯 Project Goal
+    </div>
+    <div class="insight-content" style="font-weight: 500;">
+        Identify zones of environmental injustice, provide evidence-based decision support for the Justice40 initiative, and ensure that clean air and monitoring information are accessible to every community.
+    </div>
+</div>
+
+</div>
+</section>
+<section class="section alt" id="methods">
+<div class="container">
+<div class="section-header">
+<div class="section-number">02 • Key Questions We Investigated</div>
+<h2>A Framework for Justice</h2>
+<p class="section-intro">
+    This report is built around three core questions to drive policy action.
+</p>
+</div>
+
+<div class="dimension-grid">
+    <div class="dimension-card">
+        <div class="dimension-number">Question 1</div>
+        <div class="dimension-title">Distribution of Burden</div>
+        <div class="dimension-content">
+            <p>How is unhealthy air distributed across the U.S., and is it concentrated in specific "heavy tail" regions?</p>
+        </div>
+    </div>
+    <div class="dimension-card">
+        <div class="dimension-number">Question 2</div>
+        <div class="dimension-title">Source Identification</div>
+        <div class="dimension-content">
+            <p>In the most burdened counties, which specific pollutants (e.g., Ozone vs. PM2.5) are the primary drivers of risk?</p>
+        </div>
+    </div>
+    <div class="dimension-card">
+        <div class="dimension-number">Question 3</div>
+        <div class="dimension-title">Monitoring Integrity</div>
+        <div class="dimension-content">
+            <p>Do counties with high reported risk have sufficient data to be legally compliant, or are there hidden "blindspots"?</p>
+        </div>
+    </div>
+</div>
+
+</div>
+</section>
+
+<section class="section" id="analysis">
+<div class="container">
+<div class="section-header">
+<div class="section-number">03 • Data Analysis &amp; Visualizations</div>
+</div>
+</div>
+</section>
+<section class="section" id="clean-air">
+<div class="container">
+<div class="section-header">
+<h2>3.1 Clean Air Accessibility</h2>
+<p class="section-intro">
+          We focus on (A) exposure frequency, (B) <b>the geographic concentration of inequality</b>, and (C) <b>pollutant-specific drivers</b> to target high-priority zones.
+        </p>
+</div>
+
+<h3><span class="tag">Part A</span> Exposure Frequency</h3>
+
+<div class="dimension-grid" style="grid-template-columns: 1fr 1fr;">
+    
+    <div class="dimension-card">
+        <div class="dimension-number">Exposure Metric</div>
+        <div class="dimension-title">Total Unhealthy Days</div>
+        <div class="dimension-content">
+          <p style="font-size: 0.95rem; color: #374151; margin-bottom: 1rem;">
+            Consistent with the U.S. EPA’s National Ambient Air Quality Standards (NAAQS), this study aggregates all days with an AQI exceeding 100 into a unified 'Unhealthy' metric. This approach provides a rigorous measure of total exceedance days, identifying periods when air quality failed to meet federal health safety mandates.
+          </p>
+          <div class="formula">[Unhealthy for Sensitive Groups] + [Unhealthy] + [Very Unhealthy] + [Hazardous]</div>
+          <ul class="stats-grid">
+            <li><span>Average</span> <strong><span class="counter" data-target="2.68">0</span></strong></li>
+            <li><span>Median</span> <strong><span class="counter" data-target="1.00">0</span></strong></li>
+            <li><span>Maximum</span> <strong><span class="counter" data-target="103">0</span></strong></li>
+            <li><span>Std Dev</span> <strong><span class="counter" data-target="7.8">0</span></strong></li>
+            <li><span>Skewness</span> <strong><span class="counter" data-target="8.55">0</span> (Heavy Tail)</strong></li>
+            <li><span>1st Quartile</span> <strong><span class="counter" data-target="0.00">0</span></strong></li>
+            <li><span>3rd Quartile</span> <strong><span class="counter" data-target="2.00">0</span></strong></li>
+          </ul>
+          <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.05);">
+            <strong style="color: var(--color-accent); font-size: 1rem; display:block; margin-bottom:0.3rem;">The 50x Gap Analysis</strong>
+            <span style="color: var(--color-text-muted); font-size: 0.95rem; line-height: 1.5;">
+                Most of the nation stays within 0–2 unhealthy days, yet the most burdened counties face over 100—a <strong>50-fold difference</strong> in exposure. While the national average is low, the extreme disparity—with some counties facing over 100 unhealthy days—highlights a severe localized crisis in clean air accessibility.
+            </span>
+          </div>
+        </div>
+    </div>
+
+    <div class="dimension-card">
+        <div class="dimension-number">Map Metric</div>
+        <div class="dimension-title">Unhealthy Air Rate</div>
+        <div class="dimension-content">
+            <p><strong>Purpose:</strong> Standardizes risk across counties with different monitoring schedules. It answers: "On days when air was measured, how often was it unsafe?"</p>
+            <div class="formula">[Total Unhealthy Days] / [Days with AQI]</div>
+            <p style="margin-top:1rem; font-size:0.95rem;">
+                This metric identifies areas where pollution intensity is high, even if monitoring is infrequent. It prevents "data deserts" (areas with few monitoring days) from appearing artificially clean simply because they report fewer total days.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<h3><span class="tag">Part B</span> Geographic Concentration of Inequality</h3>
+
+<div class="insight-box info">
+  <div class="insight-icon">📊</div>
+  <div class="insight-title">Quantifying Inequality: Strategic Triage</div>
+  <div class="insight-content">
+    <p>
+      <strong>Why focus on the Top 10%?</strong> Environmental burden follows a "Power Law." The worst-off counties are not just slightly worse than average; they face risk levels exponentially higher.
+      In a world of finite resources, effective policy requires <strong>triage</strong>: focusing immediate Justice40 funding on this "Heavy Tail" (the 10%) yields the massive returns in public health equity.
+    </p>
+  </div>
+</div>
+
+<div class="viz-container">
+<div class="viz-header">
+<div class="viz-title">Geographic Distribution of Unhealthy Air Rates</div>
+<div class="viz-description">
+  Highlights the top 10% of counties by unhealthy rate. Hover for Max AQI, Median AQI, and 90th Percentile data.
+</div>
+</div>
+<div class='tableauPlaceholder' id='viz1770536395084' style='position: relative'>
+  <noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;MapofUnhealthyRate&#47;1_rss.png' style='border: none' /></a></noscript>
+  <object class='tableauViz'  style='display:none;'>
+    <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+    <param name='embed_code_version' value='3' />
+    <param name='site_root' value='' />
+    <param name='name' value='Book1_17705119439220&#47;MapofUnhealthyRate' />
+    <param name='tabs' value='yes' />
+    <param name='toolbar' value='yes' />
+    <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;MapofUnhealthyRate&#47;1.png' />
+    <param name='animate_transition' value='yes' />
+    <param name='display_static_image' value='yes' />
+    <param name='display_spinner' value='yes' />
+    <param name='display_overlay' value='yes' />
+    <param name='display_count' value='yes' />
+    <param name='language' value='en-US' />
+    <param name='filter' value='publish=yes' />
+  </object>
+</div>
+</div>
+
+<div class="dimension-card" style="margin-top: 2rem;">
+    <div class="dimension-number">Ranking Metric</div>
+    <div class="dimension-title">Relative Risk Index</div>
+    <div class="dimension-content">
+        <p><strong>Purpose:</strong> Identifies how many times higher a county's risk is compared to the national baseline.</p>
+        <div class="formula">[County Unhealthy %] / [National Average %]</div>
+    </div>
+</div>
+
+<div class="viz-container">
+  <div class="viz-header">
+    <div class="viz-title">Ranking the Most Burdened 10% of U.S. Counties</div>
+    <div class="viz-description">Identifying the highest priority regions for intervention.</div>
+  </div>
+  <div class='tableauPlaceholder' id='viz1770536470907' style='position: relative'>
+    <noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;RankingtheMostBurdened10ofU_S_Counties&#47;1_rss.png' style='border: none' /></a></noscript>
+    <object class='tableauViz'  style='display:none;'>
+      <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+      <param name='embed_code_version' value='3' />
+      <param name='site_root' value='' />
+      <param name='name' value='Book1_17705119439220&#47;RankingtheMostBurdened10ofU_S_Counties' />
+      <param name='tabs' value='yes' />
+      <param name='toolbar' value='yes' />
+      <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;RankingtheMostBurdened10ofU_S_Counties&#47;1.png' />
+      <param name='animate_transition' value='yes' />
+      <param name='display_static_image' value='yes' />
+      <param name='display_spinner' value='yes' />
+      <param name='display_overlay' value='yes' />
+      <param name='display_count' value='yes' />
+      <param name='language' value='en-US' />
+      <param name='filter' value='publish=yes' />
+    </object>
+  </div>
+</div>
+
+<div class="dimension-grid">
+  <div class="dimension-card">
+    <div class="dimension-number">Observation 1</div>
+    <div class="dimension-title">The "Southern California Epicenter"</div>
+    <div class="dimension-content">
+      San Bernardino, Riverside, and Los Angeles have the highest air quality gap in the country. Their Relative Risk Index is over <strong>33</strong>, meaning people living there face a health risk <strong>33 times higher</strong> than the national average. This shows that these areas are the "center" of air pollution, where the situation is much more extreme than the rest of the U.S.
+    </div>
+  </div>
+  <div class="dimension-card">
+    <div class="dimension-number">Observation 2</div>
+    <div class="dimension-title">Regional Clusters & Border Spikes</div>
+    <div class="dimension-content">
+      Beyond California, extreme risk is concentrated in Southwest border counties like <strong>El Paso, TX (24.57)</strong> and <strong>Dona Ana, NM (18.93)</strong>. The data shows that air quality risk is not spread evenly across the nation but is highly concentrated in specific Southwest corridors and major industrial hubs.
+    </div>
+  </div>
+</div>
+
+<h3><span class="tag">Part C</span> Precision Drivers: Pollutant Profiles</h3>
+
+<div class="dimension-card">
+    <div class="dimension-number">Metric Calculation</div>
+    <div class="dimension-title">Pollutant Dominance %</div>
+    <div class="dimension-content">
+        <p><strong>Purpose:</strong> Identifies the specific chemical driver (Ozone vs PM2.5) to tailor policy (Traffic vs Industry).</p>
+        <div class="formula">[Days Pollutant X] / [Days with AQI]</div>
+    </div>
+</div>
+
+<div class="viz-container">
+  <div class="viz-header">
+    <div class="viz-title">Primary Pollutant Dominance in High-Risk Counties</div>
+    <div class="viz-description">Filtered to the top 10% of counties with the highest unhealthy rates.</div>
+  </div>
+  <div class='tableauPlaceholder' id='viz1770536499584' style='position: relative'>
+    <noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;PrimaryPollutantDominanceinHigh-RiskCounties&#47;1_rss.png' style='border: none' /></a></noscript>
+    <object class='tableauViz'  style='display:none;'>
+        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+        <param name='embed_code_version' value='3' />
+        <param name='site_root' value='' />
+        <param name='name' value='Book1_17705119439220&#47;PrimaryPollutantDominanceinHigh-RiskCounties' />
+        <param name='tabs' value='yes' />
+        <param name='toolbar' value='yes' />
+        <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;PrimaryPollutantDominanceinHigh-RiskCounties&#47;1.png' />
+        <param name='animate_transition' value='yes' />
+        <param name='display_static_image' value='yes' />
+        <param name='display_spinner' value='yes' />
+        <param name='display_overlay' value='yes' />
+        <param name='display_count' value='yes' />
+        <param name='language' value='en-US' />
+        <param name='filter' value='publish=yes' />
+    </object>
+  </div>
+</div>
+
+<div class="dimension-grid">
+  <div class="dimension-card">
+    <div class="dimension-number">Analysis 1</div>
+    <div class="dimension-title">Primary Drivers</div>
+    <div class="dimension-content">
+      <p>In the top 10% unhealthiest counties, <strong>PM2.5</strong> and <strong>Ozone</strong> are the two most dominant pollutants. They occur significantly more often than the other three pollutant types, making them the main targets for air quality concerns.</p>
+    </div>
+  </div>
+  <div class="dimension-card">
+    <div class="dimension-number">Analysis 2</div>
+    <div class="dimension-title">Regional Variations</div>
+    <div class="dimension-content">
+      <ul style="padding-left: 1rem; margin-top: 0; margin-bottom: 0;">
+        <li style="margin-bottom: 0.5rem;"><strong>PM2.5 Leaders:</strong> In Illinois, Indiana, Iowa, and Texas, PM2.5 is either the primary pollutant or is equal to Ozone.</li>
+        <li style="margin-bottom: 0.5rem;"><strong>Ozone Dominance:</strong> In most other states within the top 10%, Ozone remains the leading pollutant.</li>
+        <li><strong>PM10 Hotspots:</strong> Arizona shows a unique pattern where PM10 is a major factor, while in other states, PM10 is only found in a few scattered locations.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="insight-box info">
+  <div class="insight-title">🔍 Precision Governance</div>
+  <div class="insight-content">
+    Understanding which pollutant dominates allows for <strong>targeted policy</strong>.
+    <ul>
+      <li>High <strong>NO₂</strong> → Requires transportation reforms (EV adoption, traffic zoning).</li>
+      <li>High <strong>PM2.5</strong> → Requires stationary source caps (industrial regulation) or wildfire mitigation.</li>
+    </ul>
+  </div>
+</div>
+
+</div>
+</section>
+
+<section class="section alt" id="info-access">
+<div class="container">
+<div class="section-header">
+<h2>3.2 Information Accessibility</h2>
+<p class="section-intro">
+  Clean air justice is not only about pollution exposure — it is also about access to environmental information.
+  This section evaluates monitoring completeness and correlates it with health risk to identify policy blindspots.
+</p>
+</div>
+
+<div class="dimension-card">
+    <div class="dimension-number">Reliability Metric</div>
+    <div class="dimension-title">Monitoring Completeness (Days with AQI)</div>
+    <div class="dimension-content">
+        <p><strong>Purpose:</strong> Evaluates data integrity. Counties must monitor air quality for at least 75% of the year (274 days) to generate legally valid annual summaries.</p>
+        <div class="formula">[Days with AQI] (Raw Count per Year)</div>
+    </div>
+</div>
+
+<div class="viz-container">
+  <div class="viz-header">
+    <div class="viz-title">National Monitoring Infrastructure Map</div>
+    <div class="viz-description">Visualizing counties by Days with AQI to identify data deserts.</div>
+  </div>
+  <div class='tableauPlaceholder' id='viz1770536525614' style='position: relative'>
+    <noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;MapofMonitor&#47;1_rss.png' style='border: none' /></a></noscript>
+    <object class='tableauViz'  style='display:none;'>
+        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+        <param name='embed_code_version' value='3' />
+        <param name='site_root' value='' />
+        <param name='name' value='Book1_17705119439220&#47;MapofMonitor' />
+        <param name='tabs' value='yes' />
+        <param name='toolbar' value='yes' />
+        <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;MapofMonitor&#47;1.png' />
+        <param name='animate_transition' value='yes' />
+        <param name='display_static_image' value='yes' />
+        <param name='display_spinner' value='yes' />
+        <param name='display_overlay' value='yes' />
+        <param name='display_count' value='yes' />
+        <param name='language' value='en-US' />
+        <param name='filter' value='publish=yes' />
+    </object>
+  </div>
+</div>
+
+<div class="dimension-card">
+    <div class="dimension-title">Data Inversion: The Paradox of Monitoring</div>
+    <div class="dimension-content">
+        <p>A disturbing trend emerges when we classify counties by monitoring completeness: risk appears to decrease as monitoring disappears. This is not because air is cleaner in data deserts, but because <strong>unknown hazards are not recorded</strong>.</p>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Monitoring Tier</th>
+                    <th>Counties</th>
+                    <th>Avg Unhealthy %</th>
+                    <th>Diagnosis</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="tag-tier t1">Tier 1: Compliant (≥274 Days)</span></td>
+                    <td>125</td>
+                    <td><strong>20.2%</strong></td>
+                    <td><span style="color:var(--color-info)">Confirmed Crisis</span>: High monitoring verifies high risk.</td>
+                </tr>
+                <tr>
+                    <td><span class="tag-tier t2">Tier 2: Partial (180-273 Days)</span></td>
+                    <td>539</td>
+                    <td>0.7%</td>
+                    <td><span style="color:var(--color-secondary)">Managed</span>: Risk appears controlled.</td>
+                </tr>
+                <tr>
+                    <td><span class="tag-tier t3">Tier 3: Data Desert (<180 Days)</span></td>
+                    <td>178</td>
+                    <td>0.3%</td>
+                    <td><span style="color:var(--color-accent)">Blindspot</span>: "Low risk" is likely a false negative.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="insight-box warning" style="margin-top: 1.5rem;">
+  <div class="insight-title">🚨 Key Insight: Absence of Evidence ≠ Evidence of Absence</div>
+  <div class="insight-content">
+    "Low risk" in Tier 3 (Data Deserts) is not proof of clean air, but a consequence of inadequate oversight. The 0.3% risk rate is an illusion caused by missing data.
+  </div>
+</div>
+
+<div class="dimension-card" style="margin-top: 3rem;">
+    <div class="dimension-number">Metric Calculation</div>
+    <div class="dimension-title">Unhealthy Exceedance Rate</div>
+    <div class="dimension-content">
+        <p><strong>Purpose:</strong> Normalized Risk. Eliminates bias where counties might appear "cleaner" simply because they stopped monitoring on bad days.</p>
+        <div class="formula">[Total Unhealthy Days] / [Days with AQI]</div>
+    </div>
+</div>
+
+<div class="viz-container">
+<div class="viz-header">
+<div class="viz-title">Risk vs. Reliability Analysis</div>
+<div class="viz-description">
+    Identifying specific counties in the "Blindspot" quadrant.
+</div>
+<div class="viz-legend">
+    <span class="legend-item" style="color:var(--color-accent)">↖ P1 Blindspots</span>
+    <span class="legend-item" style="color:var(--color-secondary)">↗ P2 Hotspots</span>
+    <span class="legend-item" style="color:var(--color-info)">↙ P3 Shadows</span>
+    <span class="legend-item" style="color:#166534">↘ P4 Safeguards</span>
+</div>
+</div>
+
+<div class='tableauPlaceholder' id='viz1770536547002' style='position: relative; margin-bottom: 2rem;'>
+    <noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;AssessmentofAirQualityRisksvs_MonitoringIntegritybyCounty&#47;1_rss.png' style='border: none' /></a></noscript>
+    <object class='tableauViz'  style='display:none;'>
+        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+        <param name='embed_code_version' value='3' />
+        <param name='site_root' value='' />
+        <param name='name' value='Book1_17705119439220&#47;AssessmentofAirQualityRisksvs_MonitoringIntegritybyCounty' />
+        <param name='tabs' value='yes' />
+        <param name='toolbar' value='yes' />
+        <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1_17705119439220&#47;AssessmentofAirQualityRisksvs_MonitoringIntegritybyCounty&#47;1.png' />
+        <param name='animate_transition' value='yes' />
+        <param name='display_static_image' value='yes' />
+        <param name='display_spinner' value='yes' />
+        <param name='display_overlay' value='yes' />
+        <param name='display_count' value='yes' />
+        <param name='language' value='en-US' />
+        <param name='filter' value='publish=yes' />
+    </object>
+</div>
+</div>
+
+<div class="quadrant-grid">
+  <div class="quad-card quad-p1">
+    <span class="quad-tag">Priority 1 • Blindspots</span>
+    <h5>High Risk / Low Data</h5>
+    <div class="dimension-content">
+      <p><strong>Definition:</strong> High Exceedance Rate + Low Monitoring (< 274 days).</p>
+      <p style="margin-top:0.5rem"><strong>Action:</strong> Priority for infrastructure. Immediate installation of fixed monitoring stations to prevent being "missed" in funding.</p>
+    </div>
+  </div>
+
+  <div class="quad-card quad-p2">
+    <span class="quad-tag">Priority 2 • Hotspots</span>
+    <h5>High Risk / High Data</h5>
+    <div class="dimension-content">
+      <p><strong>Definition:</strong> High Exceedance Rate + High Monitoring.</p>
+      <p style="margin-top:0.5rem"><strong>Action:</strong> Priority for emission reduction. Data is solid; launch pollutant-specific precision mitigation.</p>
+    </div>
+  </div>
+
+  <div class="quad-card quad-p3">
+    <span class="quad-tag">Priority 3 • Shadows</span>
+    <h5>Low Risk / Low Data</h5>
+    <div class="dimension-content">
+      <p><strong>Definition:</strong> Low Rate + Low Monitoring.</p>
+      <p style="margin-top:0.5rem"><strong>Action:</strong> Priority for verification. Use mobile units or low-cost sensors to verify if "safe" status is real.</p>
+    </div>
+  </div>
+
+  <div class="quad-card quad-p4">
+    <span class="quad-tag">Model • Safeguards</span>
+    <h5>Low Risk / High Data</h5>
+    <div class="dimension-content">
+      <p><strong>Definition:</strong> Low Rate + High Monitoring.</p>
+      <p style="margin-top:0.5rem"><strong>Action:</strong> Model districts. Analyze their success for cross-regional benchmarks.</p>
+    </div>
+  </div>
+</div>
+
+<div class="insight-box warning" style="margin-top: 1.5rem;">
+  <div class="insight-title">📍 The "Blind Spot" Corridor</div>
+  <div class="insight-content">
+    The majority of "Blind Spot" counties—areas in the top 10% for air risk but with fewer than 274 monitored days—are concentrated in a corridor stretching from the <strong>Midwest to the Southwest</strong>. This geographic clustering suggests a systemic infrastructure gap in these specific regions.
+  </div>
+</div>
+
+</div>
+</section>
+
+<section class="section" id="recs">
+<div class="container">
+<div class="section-header">
+<div class="section-number">04 • Recommendations</div>
+<h2>From Insights to Action</h2>
+<p class="section-intro">
+          The goal is not only to improve national averages, but to guarantee a minimum standard of clean air access and monitoring coverage for every community.
+        </p>
+</div>
+<div class="rec-grid">
+<div class="rec-card">
+<div class="rec-label">Pillar 1 • Clean Air Access</div>
+<div class="rec-title">Target high-burden counties</div>
+<div class="rec-description">
+            Use the <strong>Relative Risk Index</strong> to prioritize interventions in "Hotspot" counties. Match interventions to pollutant profile:
+            NO₂ → transportation; PM2.5 → stationary sources; ozone → regional coordination.
+          </div>
+</div>
+<div class="rec-card">
+<div class="rec-label">Pillar 2 • Information Access</div>
+<div class="rec-title">Define "Data Justice" Standards</div>
+<div class="rec-description">
+            <strong>Policy Proposal:</strong> Establish <strong>Days with AQI ≥ 274</strong> (75% completeness) as a mandatory prerequisite for federal environmental grants.
+            This incentivizes local governments to improve monitoring networks to access Justice40 funding.
+          </div>
+</div>
+<div class="rec-card">
+<div class="rec-label">Pillar 3 • Accountability</div>
+<div class="rec-title">Dynamic Warning Systems</div>
+<div class="rec-description">
+            Move beyond simple annual averages. Implement a national "Air Accessibility Health Map" based on <strong>Exceedance Rates</strong>
+            to provide real-time identification of regions where risk is escalating despite low total days.
+          </div>
+</div>
+</div>
+</div>
+</section>
+
+<footer class="footer"><div class="footer-content"><div class="footer-section"><h4>About This Analysis</h4><p>Created for DubsTech Datathon 2026 supporting Justice40 environmental justice initiative. This analysis evaluates air quality and monitoring accessibility across U.S. counties to identify communities bearing disproportionate environmental burdens and guide evidence-based policy intervention.</p></div><div class="footer-section"><h4>Data Sources &amp; References</h4><p>EPA Air Quality Index (AQI) by County Dataset<br/>EPA Air Quality National Summary<br/>American Lung Association State of the Air Report<br/>Justice40 Initiative Framework<br/><br/><a href="https://public.tableau.com/app/profile/sihe.shen/viz/Book1_17705119439220/RankingtheMostBurdened10ofU_S_Counties?publish=yes" rel="noopener" target="_blank">View Tableau Workbook →</a><br/><a href="https://www.epa.gov/air-trends/air-quality-national-summary" rel="noopener" target="_blank">View EPA Documentation →</a><br/><a href="https://www.lung.org/research/sota" rel="noopener" target="_blank">View ALA Report →</a></p>
+<p style="margin-top: 1rem;">
+<strong>APA (7th)</strong><br/>
+              U.S. Environmental Protection Agency. (n.d.). <em>Air quality index (AQI) basics</em>. https://www.airnow.gov/aqi/aqi-basics/<br/>
+              U.S. Environmental Protection Agency. (n.d.). <em>About air data reports</em>. https://www.epa.gov/outdoor-air-quality-data/about-air-data-reports<br/>
+              U.S. Environmental Protection Agency. (2016). <em>Data completeness requirements for NAAQS</em> (40 CFR Part 50).<br/>
+              The White House. (2021). <em>Executive order 14008: Tackling the climate crisis at home and abroad</em> (Justice40 Initiative).<br/>
+              American Lung Association. (n.d.). <em>State of the air</em>. https://www.lung.org/research/sota
+            </p>
+</div><div class="footer-section"><h4>Team &amp; Repository</h4><p>Team Name: R&amp;B<br/>Team Members: [Kexuan Feng, Skye Shen]<br/>Institution: [UW MSIM]</p></div></div></footer>
+
+<script>
+    // Tab navigation -> smooth scroll to section
+    const tabs = document.querySelectorAll('.nav-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const targetId = tab.getAttribute('data-target');
+        const el = document.getElementById(targetId);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Scroll spy (lightweight)
+    const sections = [
+      { id: 'summary', tabIndex: 0 },
+      { id: 'methods', tabIndex: 1 },
+      { id: 'analysis', tabIndex: 2 },
+      { id: 'recs', tabIndex: 3 },
+      { id: 'about', tabIndex: 4 },
+    ];
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = sections.findIndex(s => s.id === entry.target.id);
+          if (idx >= 0) {
+            tabs.forEach(t => t.classList.remove('active'));
+            tabs[idx].classList.add('active');
+          }
+        }
+      });
+    }, { threshold: 0.25, rootMargin: '-15% 0px -70% 0px' });
+    sections.forEach(s => {
+      const el = document.getElementById(s.id);
+      if (el) spy.observe(el);
+    });
+
+    // Entrance animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('animate-in');
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+    document.querySelectorAll('.dimension-card, .viz-container, .insight-box, .rec-card, .metric, .quad-card').forEach(el => observer.observe(el));
+</script>
+
+<script>
+// Number Counter Animation
+const counterObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const target = entry.target;
+      const endValue = parseFloat(target.getAttribute('data-target').replace(/,/g, ''));
+      const duration = 1500; // 动画持续1.5秒
+      const startTime = performance.now();
+      const startValue = 0;
+
+      const updateCounter = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Ease-out quart function for smooth slowing down
+        const ease = 1 - Math.pow(1 - progress, 4);
+        
+        const current = startValue + (endValue - startValue) * ease;
+        
+        // 格式化数字（保留小数或加逗号）
+        if (Number.isInteger(endValue)) {
+            target.innerText = Math.round(current).toLocaleString();
+        } else {
+            target.innerText = current.toFixed(2); // 保留两位小数
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(updateCounter);
+        } else {
+          target.innerText = endValue.toLocaleString(); // 确保最终值精确
+        }
+      };
+      
+      requestAnimationFrame(updateCounter);
+      observer.unobserve(target);
+    }
+  });
+}, { threshold: 0.5 });
+
+// Apply to metrics (You need to update HTML to use <span class="counter" data-target="2048">0</span>)
+document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+</script>
+
+<script type='text/javascript'>
+    // Initialize Map Unhealthy Rate (Viz 1)
+    var divElement3 = document.getElementById('viz1770536395084');
+    var vizElement3 = divElement3.getElementsByTagName('object')[0];
+    vizElement3.style.width='100%';vizElement3.style.height=(divElement3.offsetWidth*0.75)+'px';
+    var scriptElement3 = document.createElement('script');
+    scriptElement3.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+    vizElement3.parentNode.insertBefore(scriptElement3, vizElement3);
+
+    // Initialize Ranking Viz (Viz 2)
+    var divElement4 = document.getElementById('viz1770536470907');
+    var vizElement4 = divElement4.getElementsByTagName('object')[0];
+    vizElement4.style.width='100%';vizElement4.style.height=(divElement4.offsetWidth*0.75)+'px';
+    var scriptElement4 = document.createElement('script');
+    scriptElement4.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+    vizElement4.parentNode.insertBefore(scriptElement4, vizElement4);
+
+    // Initialize Pollutant Viz (Viz 3)
+    var divElement6 = document.getElementById('viz1770536499584');
+    var vizElement6 = divElement6.getElementsByTagName('object')[0];
+    vizElement6.style.width='100%';vizElement6.style.height=(divElement6.offsetWidth*0.75)+'px';
+    var scriptElement6 = document.createElement('script');
+    scriptElement6.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+    vizElement6.parentNode.insertBefore(scriptElement6, vizElement6);
+
+    // Initialize Monitor Map (Viz 4)
+    var divElement5 = document.getElementById('viz1770536525614');
+    var vizElement5 = divElement5.getElementsByTagName('object')[0];
+    vizElement5.style.width='100%';vizElement5.style.height=(divElement5.offsetWidth*0.75)+'px';
+    var scriptElement5 = document.createElement('script');
+    scriptElement5.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+    vizElement5.parentNode.insertBefore(scriptElement5, vizElement5);
+
+    // Initialize Scatter Plot (Viz 5)
+    var divElement1 = document.getElementById('viz1770536547002');
+    var vizElement1 = divElement1.getElementsByTagName('object')[0];
+    vizElement1.style.width='100%';vizElement1.style.height=(divElement1.offsetWidth*0.75)+'px';
+    var scriptElement = document.createElement('script');
+    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+    vizElement1.parentNode.insertBefore(scriptElement, vizElement1);
+</script>
+</body>
+</html>
